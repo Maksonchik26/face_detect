@@ -4,39 +4,40 @@ from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.async_base import get_async_session
+from app.db.base import get_session
 
 
 class AbstractCRUD(metaclass=ABCMeta):
     @abstractmethod
-    def read_all(self, *args, **kwargs):
+    async def read_all(self, *args, **kwargs):
         """
         Abstract method to read all entities.
         """
         ...
 
     @abstractmethod
-    def read_one(self, *args, **kwargs):
+    async def read_one(self, *args, **kwargs):
         """
         Abstract method to read a single entity.
         """
         ...
 
     @abstractmethod
-    def create(self, *args, **kwargs):
+    async def create(self, *args, **kwargs):
         """
         Abstract method to create an entity.
         """
         ...
 
     @abstractmethod
-    def update(self, *args, **kwargs):
+    async def update(self, *args, **kwargs):
         """
         Abstract method to update an entity.
         """
         ...
 
     @abstractmethod
-    def delete(self, *args, **kwargs):
+    async def delete(self, *args, **kwargs):
         """
         Abstract method to delete an entity.
         """

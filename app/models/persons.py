@@ -9,3 +9,4 @@ class PersonIn(BaseModel):
 
 class PersonOut(PersonIn):
     id: int
+    image_id: int

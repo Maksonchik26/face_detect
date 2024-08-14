@@ -3,7 +3,8 @@ import os
 import uvicorn
 from fastapi import FastAPI, APIRouter
 
-# fromrouters.projects import router as projects_router
+from app.routers import router
+# from app.routers.tasks import router as tasks_router
 # from app.routers.users import router as users_router
 
 
@@ -19,13 +20,9 @@ def create_app() -> FastAPI:
             It includes middleware setup, router inclusion, and lifecycle event handling.
         """
     app_ = FastAPI(
-        title="Bot Farm",
-        description="Bot Farm Application"
+        title="Face detect app",
+        description="Face detect app"
     )
-
-    router = APIRouter()
-    # router.include_router(projects_router)
-    # router.include_router(users_router)
 
     app_.include_router(router)
 

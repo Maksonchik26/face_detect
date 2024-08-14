@@ -1,3 +1,5 @@
+from typing import List
+
 from sqlalchemy import Boolean, ForeignKey, JSON, String, Text, Date, DateTime, Integer, Float
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from sqlalchemy.dialects.postgresql import UUID
@@ -36,29 +38,29 @@ class Task(BaseModel):
     total_females: Mapped[int] = mapped_column(Integer(), nullable=True)
     average_male_age: Mapped[int] = mapped_column(Float(), nullable=True)
     average_female_age: Mapped[int] = mapped_column(Float(), nullable=True)
+    status: Mapped[str] = mapped_column(String(64), default="Created")
     # relations
-    images: Mapped["Image"] = relationship(back_populates="images")
+    images: Mapped[List["Image"]] = relationship(back_populates="task")
 
 
 class Image(BaseModel):
     __tablename__ = "image"
     id: Mapped[int] = mapped_column(Integer(), primary_key=True)
     name: Mapped[str] = mapped_column(String(64), nullable=False)
-    description: Mapped[str] = mapped_column(String(512))
     # parent
     task_id: Mapped[int] = mapped_column(ForeignKey("task.id", ondelete="CASCADE"))
     # relations
     task: Mapped["Task"] = relationship(back_populates="images")
-    persons: Mapped["Person"] = relationship(back_populates="image", cascade="all,delete")
+    persons: Mapped[List["Person"]] = relationship(back_populates="image", cascade="all,delete")
 
 
 class Person(BaseModel):
     __tablename__ = "person"
     id: Mapped[int] = mapped_column(Integer(), primary_key=True)
     bounding_box: Mapped[dict] = mapped_column(JSON)
-    sex: Mapped[str] = mapped_column(String(64))
+    gender: Mapped[str] = mapped_column(String(64))
     age: Mapped[int] = mapped_column(Integer())
     # parent
-    image_id: Mapped[int] = relationship(ForeignKey("image.id", ondelete="CASCADE"))
+    image_id: Mapped[int] = mapped_column(ForeignKey("image.id", ondelete="CASCADE"))
     # relations
-    image: Mapped["Task"] = relationship(back_populates="persons")
+    image: Mapped["Image"] = relationship(back_populates="persons")

@@ -1,6 +1,8 @@
-from typing import List
+from typing import List, Optional
 
 from pydantic import BaseModel
+
+from app.models.images import ImageOut
 
 
 class TaskIn(BaseModel):
@@ -9,5 +11,10 @@ class TaskIn(BaseModel):
 
 class TaskOut(TaskIn):
     id: int
+    total_persons: Optional[int]
+    total_males: Optional[int]
+    total_females: Optional[int]
+    average_female_age: Optional[float]
+    average_male_age: Optional[float]
     status: str
     images: List[ImageOut]
