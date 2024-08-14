@@ -1,1 +1,1 @@
-# face_detect
+# person_detect
