@@ -1,25 +1,12 @@
 from typing import List
 
-from sqlalchemy import Boolean, ForeignKey, JSON, String, Text, Date, DateTime, Integer, Float
+from sqlalchemy import ForeignKey, JSON, String, Integer, Float
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
-from sqlalchemy.dialects.postgresql import UUID
+
 
 
 class UpdateMixin:
-    # """
-    # Mixin class providing functionality to update entity attributes dynamically.
-    #
-    # Methods:
-    #     - update_entity: Update entity attributes dynamically.
-    # """
-
     def update_entity(self, **kwargs):
-        # """
-        # Update entity attributes dynamically.
-        #
-        # Args:
-        #     **kwargs: Arbitrary keyword arguments representing entity attribute names and values.
-        # """
         for field, value in kwargs.items():
             if hasattr(self, field):
                 setattr(self, field, value)

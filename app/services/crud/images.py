@@ -1,16 +1,17 @@
 from abc import ABC
 from typing import Sequence, Optional
 
+from fastapi import HTTPException
 from sqlalchemy import select
 
-from app.db.tables import Image
+from app.db.tables import Image, Person
 from app.models.images import ImageIn
 from app.services.crud.common import CRUD
 
 
 class ImagesCRUD(CRUD, ABC):
-    async def create(self, image_data: ImageIn) -> Image:
-        image = Image(**image_data.model_dump())
+    async def create(self, task_id: int, name: str) -> Image:
+        image = Image(name=name, task_id=task_id)
         self.session.add(image)
         await self.session.commit()
         await self.session.refresh(image)
@@ -31,6 +32,21 @@ class ImagesCRUD(CRUD, ABC):
         await self.session.commit()
         await self.session.refresh(image)
 
+        return image
+
+    async def add_person_to_image(self, image_id: int, person_id: int):
+        image = await self.read_one(image_id)
+        if not image:
+            raise HTTPException(status_code=404, detail="Image not found")
+
+        # Assuming `images.persons` is a relationship and we append persons
+        person = await self.session.get(Person, person_id)
+        if not image:
+            raise HTTPException(status_code=404, detail="Image not found")
+
+        image.persons.append(person)
+        await self.session.commit()
+        await self.session.refresh(image)
         return image
 
     async def delete(self, image_id: str) -> None:

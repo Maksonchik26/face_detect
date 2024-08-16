@@ -1,11 +1,9 @@
 import os
 
 import uvicorn
-from fastapi import FastAPI, APIRouter
+from fastapi import FastAPI
 
 from app.routers import router
-# from app.routers.tasks import router as tasks_router
-# from app.routers.users import router as users_router
 
 
 def create_app() -> FastAPI:

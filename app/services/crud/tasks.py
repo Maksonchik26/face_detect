@@ -1,9 +1,9 @@
 from abc import ABC
 from typing import Sequence, Optional
 
-from fastapi import Depends
+from fastapi import Depends, HTTPException
 from sqlalchemy import select
-from sqlalchemy.orm import selectinload
+from sqlalchemy.orm import selectinload, joinedload
 
 from app.db.tables import Task, Image
 from app.models.tasks import TaskIn
@@ -21,27 +21,40 @@ class TasksCRUD(CRUD, ABC):
         return task
 
     async def read_all(self, images_crud: ImagesCRUD = Depends()) -> Sequence[Task]:
-        # stmt = select(Task).options(
-        #     selectinload(Task.images).selectinload(Image.persons)
-        # )
-        #
-        # # Выполняем запрос
-        # result = self.session.execute(stmt)
-        #
-        # # Извлекаем все задачи из результата
-        # tasks = result.scalars().all()
+        tasks = await self.session.execute(select(Task).options(selectinload(Task.images).
+                                                                selectinload(Image.persons)))
+        tasks = tasks.scalars().all()
 
-        return await self.session.scalar(select(Task).options(selectinload(Task.images).selectinload(Image.persons)))
+        return tasks
 
-    async def read_one(self, task_id: int) -> Optional[Task]:
-        return await self.session.scalar(select(Task).options(selectinload(Task.images).selectinload(Image.persons)).where(Task.id == task_id).limit(1))
+    async def read_one(self, task_id: int) -> Task:
+        return await self.session.scalar(
+            select(Task).options(
+                selectinload(Task.images).selectinload(Image.persons)
+            ).where(Task.id == task_id).limit(1)
+        )
 
     async def update(self, task_id: str, task_data: TaskIn):
-        task: Task = self.read_one(task_id)
+        task: Task = await self.read_one(task_id)
         task.update_entity(**task_data.model_dump())
         await self.session.commit()
         await self.session.refresh(task)
 
+        return task
+
+    async def add_image_to_task(self, task_id: int, image_id: int):
+        task = await self.read_one(task_id)
+        if not task:
+            raise HTTPException(status_code=404, detail="Task not found")
+
+        # Assuming `task.images` is a relationship and you can append images
+        image = await self.session.get(Image, image_id)
+        if not image:
+            raise HTTPException(status_code=404, detail="Image not found")
+
+        task.images.append(image)
+        await self.session.commit()
+        await self.session.refresh(task)
         return task
 
     async def delete(self, task_id: str) -> None:

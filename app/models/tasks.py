@@ -18,3 +18,11 @@ class TaskOut(TaskIn):
     average_male_age: Optional[float]
     status: str
     images: List[ImageOut]
+
+
+class TaskCount(BaseModel):
+    total_persons: Optional[int]
+    total_males: Optional[int]
+    total_females: Optional[int]
+    average_male_age: Optional[float]
+    average_female_age: Optional[float]

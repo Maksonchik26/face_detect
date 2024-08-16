@@ -1,5 +1,4 @@
 import asyncio
-import os
 
 
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
