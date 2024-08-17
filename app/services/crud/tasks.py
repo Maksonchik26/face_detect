@@ -17,6 +17,7 @@ class TasksCRUD(CRUD, ABC):
         self.session.add(task)
         await self.session.commit()
         await self.session.refresh(task)
+        task = await self.read_one(task.id)
 
         return task
 
@@ -39,6 +40,7 @@ class TasksCRUD(CRUD, ABC):
         task.update_entity(**task_data.model_dump())
         await self.session.commit()
         await self.session.refresh(task)
+        task = await self.read_one(task.id)
 
         return task
 
@@ -55,9 +57,11 @@ class TasksCRUD(CRUD, ABC):
         task.images.append(image)
         await self.session.commit()
         await self.session.refresh(task)
+        task = await self.read_one(task.id)
+
         return task
 
     async def delete(self, task_id: str) -> None:
-        task: Task = self.read_one(task_id)
+        task: Task = await self.read_one(task_id)
         await self.session.delete(task)
         await self.session.commit()

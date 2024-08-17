@@ -27,7 +27,7 @@ class Task(BaseModel):
     average_female_age: Mapped[int] = mapped_column(Float(), nullable=True)
     status: Mapped[str] = mapped_column(String(64), default="Created")
     # relations
-    images: Mapped[List["Image"]] = relationship(back_populates="task")
+    images: Mapped[List["Image"]] = relationship(back_populates="task", cascade="all, delete")
 
 
 class Image(BaseModel):
@@ -38,7 +38,7 @@ class Image(BaseModel):
     task_id: Mapped[int] = mapped_column(ForeignKey("task.id", ondelete="CASCADE"))
     # relations
     task: Mapped["Task"] = relationship(back_populates="images")
-    persons: Mapped[List["Person"]] = relationship(back_populates="image", cascade="all,delete")
+    persons: Mapped[List["Person"]] = relationship(back_populates="image", cascade="all, delete")
 
 
 class Person(BaseModel):

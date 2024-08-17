@@ -65,6 +65,7 @@ async def add_image_to_task(
     # Image processing and person detection
     image_persons_data = await detect_faces_api(file)
 
+    # TODO Подумать над выносом всей логики расчета отсюда
     # Get statistic from the image
     total_males_and_age_image = count_total_persons_and_age_by_gender(image_persons_data, "male")
     total_females_and_age_image = count_total_persons_and_age_by_gender(image_persons_data, "female")
@@ -121,6 +122,14 @@ async def add_image_to_task(
     await task_crud.update(task_id, task_data)
 
     return task
+
+
+@router.delete("/{task_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_task(
+        task_id: int,
+        tasks_crud: TasksCRUD = Depends()
+):
+    await tasks_crud.delete(task_id)
 
 
 # @router.put("/{task_id}/sync_demographic_data", response_model=TaskOut, status_code=status.HTTP_200_OK)

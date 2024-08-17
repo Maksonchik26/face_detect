@@ -14,6 +14,7 @@ class PersonsCRUD(CRUD, ABC):
         self.session.add(person)
         await self.session.commit()
         await self.session.refresh(person)
+        person = await self.read_one(person.id)
 
         return person
 
@@ -28,6 +29,7 @@ class PersonsCRUD(CRUD, ABC):
         person.update_entity(**person_data.model_dump())
         await self.session.commit()
         await self.session.refresh(person)
+        person = await self.read_one(person.id)
 
         return person
 

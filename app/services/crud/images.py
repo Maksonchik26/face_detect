@@ -15,6 +15,7 @@ class ImagesCRUD(CRUD, ABC):
         self.session.add(image)
         await self.session.commit()
         await self.session.refresh(image)
+        image = await self.read_one(image.id)
 
         return image
 
