@@ -26,3 +26,7 @@ class TaskCount(BaseModel):
     total_females: Optional[int]
     average_male_age: Optional[float]
     average_female_age: Optional[float]
+
+
+class TaskStatus(BaseModel):
+    status: str

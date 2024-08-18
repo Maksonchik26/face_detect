@@ -51,6 +51,6 @@ class ImagesCRUD(CRUD, ABC):
         return image
 
     async def delete(self, image_id: str) -> None:
-        image: Image = self.read_one(image_id)
+        image: Image = await self.read_one(image_id)
         await self.session.delete(image)
         await self.session.commit()

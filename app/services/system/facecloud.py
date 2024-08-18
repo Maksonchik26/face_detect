@@ -2,21 +2,30 @@ import os
 
 import requests
 from dotenv import load_dotenv
-from fastapi import UploadFile, File
 
 
 load_dotenv()
 
+FACE_CLOUD_API_URL = os.getenv('FACE_CLOUD_API_URL')
+FACE_CLOUD_USERNAME = os.getenv('FACE_CLOUD_USERNAME')
+FACE_CLOUD_PASSWORD = os.getenv('FACE_CLOUD_PASSWORD')
 
-async def detect_faces_api(file: UploadFile = File(...)):
-    url = "https://backend.facecloud.tevian.ru/api/v1/detect?demographics=True"
-    bearer_token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjM3MjEwNzYsIm5iZiI6MTcyMzcyMTA3NiwianRpIjoiYzc0NjJkZTUtMzZhZS00NTZkLWFkNDEtNmJlN2FhMzY2N2Q4Iiwic3ViIjo0NDQsImZyZXNoIjpmYWxzZSwidHlwZSI6ImFjY2VzcyJ9.0XbiwsW7pYSQ4Nlfds3XXbKtusquWkT12zOV6wqVdrc"
+
+def get_facecloud_token():
+    url = f"{FACE_CLOUD_API_URL}/login"
+    response = requests.post(url,
+                             json={"email": FACE_CLOUD_USERNAME, "password": FACE_CLOUD_PASSWORD})
+
+    return response.json()["data"]['access_token']
+
+
+async def detect_faces_api(file_bytes: bytes):
+    url = f"{FACE_CLOUD_API_URL}/detect?demographics=True"
+    bearer_token = get_facecloud_token()
     headers = {
         'Authorization': f'Bearer {bearer_token}',
         'Content-Type': 'image/jpeg',
     }
-    # TODO убрать хардкод
-    file_bytes = await file.read()
     response = requests.post(url, headers=headers, data=file_bytes)
 
     if response.status_code == 200:
