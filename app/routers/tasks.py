@@ -170,6 +170,8 @@ async def process_image_task(
         # if error happened, set status "error"
         if image is not None:
             await images_crud.delete(image.id)
+        if os.path.exists(f"{directory}/{file_name}"):
+            os.remove(f"{directory}/{file_name}")
         task_status = TaskStatus(status="error")
         await task_crud.update(task.id, task_status)
 
