@@ -4,7 +4,6 @@ from sqlalchemy import ForeignKey, JSON, String, Integer, Float
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
-
 class UpdateMixin:
     def update_entity(self, **kwargs):
         for field, value in kwargs.items():

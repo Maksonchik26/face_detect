@@ -20,14 +20,7 @@ services:
       - .env
     container_name: face_detect_app
     ports:
-      - "9999:8000"
-    environment:
-      DATABASE_URL: postgresql+asyncpg://admin:admin@db:5432/face_detect_db
-      FACE_CLOUD_USERNAME: mzolotarev@mail.ru
-      FACE_CLOUD_PASSWORD: password
-      FACE_CLOUD_API_URL: "https://backend.facecloud.tevian.ru/api/v1"
-      API_USERNAME: username
-      API_PASSWORD: password
+      - "8000:8000"
     depends_on:
       - db
     command: bash -c "uvicorn app.main:app --host 0.0.0.0 --port 8000"

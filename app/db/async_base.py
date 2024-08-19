@@ -1,12 +1,8 @@
-import asyncio
-
-
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
 from app.db.tables import BaseModel
 
-#TODO Убрать URL в .env
 engine = create_async_engine(url="postgresql+asyncpg://admin:admin@db:5432/face_detect_db", echo=True)
 
 
@@ -17,7 +13,6 @@ async def create_db():
     await engine.dispose()
 
 
-# asyncio.run(create_db())
 async_session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
 
