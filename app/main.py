@@ -3,6 +3,7 @@ import os
 import uvicorn
 from fastapi import FastAPI
 
+from app.db.async_base import create_db
 from app.routers import router
 
 
@@ -28,6 +29,11 @@ def create_app() -> FastAPI:
 
 
 app = create_app()
+
+
+@app.on_event("startup")
+async def startup_event():
+    await create_db()
 
 
 @app.get("/")
